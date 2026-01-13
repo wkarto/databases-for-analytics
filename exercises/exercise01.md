@@ -27,7 +27,9 @@
 Why were these data types selected?
 
 ### Answer
-_Write your explanation here._
+country.Population is stored as an INT because population values are whole numbers and do not require decimal precision. Using an integer is efficient for storage and calculations such as sums and averages.
+
+country.LifeExpectancy is stored as a DECIMAL(3,1) because life expectancy often includes fractional values (for example, 78.4 years). This data type allows precise storage of decimal values without rounding errors.
 
 ### Screenshot
 _Show the table structure or DESCRIBE output._
@@ -46,7 +48,8 @@ DESCRIBE country;
 Why do you think this data type was selected?
 
 ### Answer
-_Write your explanation here._
+The data type of country.IndepYear is SMALLINT.
+This data type was selected because years fall within a relatively small numeric range and do not require decimal values. SMALLINT uses less storage space than a full integer while still covering historical and modern year values.
 
 ### Screenshot
 
@@ -64,7 +67,8 @@ DESCRIBE country;
 Explain why your proposed data type might be better in some situations.
 
 ### Answer
-_Write your explanation here._
+An alternative data type for country.IndepYear could be YEAR.
+Using the YEAR data type would improve clarity and enforce valid year values, making the column more semantically meaningful. This could be beneficial for date-based queries or when enforcing stricter data validation related to historical timelines.
 
 ---
 
