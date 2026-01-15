@@ -1,6 +1,6 @@
 # Exercise 02: World Database – Joins, Grouping, and Data Quality
 
-- Name:
+- Name:Karto
 - Course: Database for Analytics
 - Module: 2
 - Database Used: World Database (PostgreSQL)
@@ -23,13 +23,14 @@
 When importing records from `worldPGSQL.sql`, **how many cities were imported**?
 
 ### Answer
-_Write the number of cities imported._
+4079
 
 ### Screenshot
 _Show evidence of how you determined this (for example, a COUNT query)._
 
 ```sql
--- Your SQL here
+SELECT COUNT(*) AS total_cities
+FROM city;
 ```
 
 ![Q1 Screenshot](screenshots/q1_city_count.png)
@@ -43,7 +44,12 @@ Using the World database, write the SQL command to **display each country name a
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT c.name AS country_name,
+       cl.language
+FROM country c
+JOIN countrylanguage cl
+  ON c.code = cl.countrycode
+ORDER BY c.name, cl.language;
 ```
 
 ### Screenshot
@@ -59,7 +65,13 @@ Using the World database, write the SQL command to **display each country name a
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT c.name AS country_name,
+       cl.language
+FROM country c
+JOIN countrylanguage cl
+  ON c.code = cl.countrycode
+WHERE cl.isofficial = 'T'
+ORDER BY c.name, cl.language;
 ```
 
 ### Screenshot
@@ -88,8 +100,8 @@ ON country.code = countrylanguage.countrycode;
 **In your own words**, describe what data the **second query returns that the first query does not**.
 
 ### Answer
-_Write your explanation here._
-
+The second query (LEFT OUTER JOIN) returns all countries, including those that do not have any matching records in the countrylanguage table. For such countries, the language-related columns are returned as NULL.
+The first query only returns countries that have at least one matching language, excluding countries without related records.
 ---
 
 ## Question 5
@@ -100,12 +112,14 @@ Do **not** repeat any form of government more than once.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT DISTINCT governmentform
+FROM country
+ORDER BY governmentform;
 ```
 
 ### Screenshot
 
-![Q5 Screenshot](screenshots/q5_government_forms.png)
+![Q5 Screenshot](screenshots/q5_government_forms1.png)
 
 ---
 
@@ -117,7 +131,12 @@ Label the column **"City or Country Name"**.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT name AS "City or Country Name"
+FROM city
+UNION
+SELECT name
+FROM country
+ORDER BY "City or Country Name";
 ```
 
 ### Screenshot
@@ -134,7 +153,13 @@ Be sure to **sort by country name**.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT c.name AS country_name,
+       COUNT(cl.language) AS language_count
+FROM country c
+LEFT JOIN countrylanguage cl
+  ON c.code = cl.countrycode
+GROUP BY c.name
+ORDER BY c.name;
 ```
 
 ### Screenshot
@@ -151,7 +176,11 @@ Be sure to **sort by language name**.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT cl.language,
+       COUNT(DISTINCT cl.countrycode) AS country_count
+FROM countrylanguage cl
+GROUP BY cl.language
+ORDER BY cl.language;
 ```
 
 ### Screenshot
@@ -169,7 +198,15 @@ Using the World database, write the SQL command to **list countries that have mo
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT c.name AS country_name,
+       COUNT(cl.language) AS official_language_count
+FROM country c
+JOIN countrylanguage cl
+  ON c.code = cl.countrycode
+WHERE cl.isofficial = 'T'
+GROUP BY c.name
+HAVING COUNT(cl.language) > 2
+ORDER BY c.name;
 ```
 
 ### Screenshot
@@ -187,7 +224,10 @@ Using the World database, write the SQL command to **find cities where the distr
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT name, district
+FROM city
+WHERE district IS NULL
+   OR district LIKE '-';
 ```
 
 ### Screenshot
@@ -205,7 +245,10 @@ Using the World database, write the SQL command to **calculate the percentage of
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+  (COUNT(*) FILTER (WHERE district IS NULL OR district LIKE '-')
+   * 100.0 / COUNT(*)) AS missing_district_percentage
+FROM city;
 ```
 
 ### Screenshot
