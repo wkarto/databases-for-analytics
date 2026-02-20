@@ -107,7 +107,7 @@ Save your diagram image in this repo and embed it below.
 
 #### Diagram
 
-![Star Schema Diagram](star-schema.png)
+![Star Schema Diagram](screenshots/star_schema.png)
 
 ---
 
@@ -121,4 +121,6 @@ In 1-2 short paragraphs, explain:
 
 #### Design Notes
 
-_Write your design notes here._
+I designed a star schema with one fact table, FACT_DAILY_SALES, and three dimensions: DIM_DATE, DIM_CUSTOMER, and DIM_PART. DIM_DATE supports time-based analysis (day, month, quarter, year), DIM_CUSTOMER supports customer and zip code reporting, and DIM_PART supports product and category analysis. I excluded sales reps, inventory, and financial fields because they were listed as non-requirements.
+
+The grain of the fact table is one row per day per customer per part, which matches the requirement for daily sales totals. The table stores only quantity and amount. This design supports questions such as how many of part ax12 were sold on a specific date, how much a customer spent last year, and the average daily sales during a specific quarter.
